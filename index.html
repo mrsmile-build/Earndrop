@@ -1,3 +1,968 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-7BS2L567HJ"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag("js", new Date());
+gtag("config", "G-7BS2L567HJ");
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>EarnDrop — Complete Tasks. Earn Rewards. Win Prizes.</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #F5C518;
+  --gold2: #FFD700;
+  --goldDim: rgba(245,197,24,0.1);
+  --goldBorder: rgba(245,197,24,0.25);
+  --dark: #070707;
+  --dark2: #0d0d0d;
+  --dark3: #141414;
+  --dark4: #1c1c1c;
+  --dark5: #222;
+  --green: #00D26A;
+  --greenDim: rgba(0,210,106,0.1);
+  --red: #FF4757;
+  --text: #F0F0F0;
+  --muted: #666;
+  --muted2: #444;
+  --border: #222;
+  --radius: 18px;
+  --radiusSm: 12px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  background:var(--dark);color:var(--text);
+  min-height:100vh;overflow-x:hidden;
+  max-width:480px;margin:0 auto;
+}
+
+/* SCREENS */
+.screen{display:none;min-height:100vh;flex-direction:column;}
+.screen.active{display:flex;}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+@keyframes glow{0%,100%{opacity:0.12}50%{opacity:0.22}}
+@keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes bounceIn{0%{transform:scale(0.4);opacity:0}60%{transform:scale(1.1)}80%{transform:scale(0.95)}100%{transform:scale(1);opacity:1}}
+@keyframes shimmer{0%{background-position:-400px 0}100%{background-position:400px 0}}
+@keyframes countUp{from{opacity:0;transform:scale(0.7)}to{opacity:1;transform:scale(1)}}
+
+/* SHARED */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  border:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;
+  font-weight:700;border-radius:50px;transition:all 0.25s;outline:none;
+  position:relative;overflow:hidden;letter-spacing:0.2px;
+}
+.btn:active{transform:scale(0.97)!important;}
+.btn-gold{background:var(--gold);color:#000;font-size:15px;padding:16px 32px;width:100%;
+  box-shadow:0 6px 28px rgba(245,197,24,0.25);}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(245,197,24,0.38);}
+.btn-outline{background:transparent;color:var(--gold);font-size:14px;padding:14px 28px;
+  border:1.5px solid var(--goldBorder);width:100%;}
+.btn-outline:hover{background:var(--goldDim);}
+.btn-green{background:var(--green);color:#000;font-size:14px;padding:12px 24px;}
+.btn-green:hover{box-shadow:0 6px 20px rgba(0,210,106,0.3);}
+.btn-sm{padding:9px 18px;font-size:12px;}
+
+.card{background:var(--dark3);border:1px solid var(--border);border-radius:var(--radius);padding:20px;}
+
+.input-g{margin-bottom:15px;}
+.input-g label{display:block;font-size:11px;color:var(--muted);font-weight:700;
+  letter-spacing:0.8px;text-transform:uppercase;margin-bottom:7px;}
+.input-g input,.input-g select{
+  width:100%;background:var(--dark4);border:1.5px solid var(--border);
+  border-radius:var(--radiusSm);padding:13px 16px;color:var(--text);
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;outline:none;
+  transition:border-color 0.2s;
+}
+.input-g input:focus,.input-g select:focus{border-color:var(--gold);}
+.input-g input::placeholder{color:var(--muted2);}
+select option{background:var(--dark3);}
+
+.badge{display:inline-flex;align-items:center;gap:4px;border-radius:50px;
+  padding:4px 10px;font-size:10px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;}
+.badge-gold{background:var(--goldDim);color:var(--gold);border:1px solid var(--goldBorder);}
+.badge-green{background:var(--greenDim);color:var(--green);border:1px solid rgba(0,210,106,0.2);}
+.badge-red{background:rgba(255,71,87,0.1);color:var(--red);border:1px solid rgba(255,71,87,0.2);}
+.badge-blue{background:rgba(41,121,255,0.1);color:#6fa3ff;border:1px solid rgba(41,121,255,0.2);}
+
+/* TOAST */
+#toast{
+  position:fixed;bottom:88px;left:50%;transform:translateX(-50%) translateY(10px);
+  background:#1e1e1e;color:#fff;padding:11px 22px;border-radius:50px;
+  font-size:13px;font-weight:600;opacity:0;transition:all 0.3s;z-index:9999;
+  white-space:nowrap;pointer-events:none;border:1px solid #333;
+  box-shadow:0 8px 24px rgba(0,0,0,0.5);
+}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* BOTTOM NAV */
+#bnav{
+  position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+  width:100%;max-width:480px;
+  background:rgba(8,8,8,0.96);backdrop-filter:blur(20px);
+  border-top:1px solid var(--border);
+  display:none;grid-template-columns:repeat(4,1fr);
+  z-index:100;padding:8px 0 12px;
+}
+#bnav.show{display:grid;}
+.ni{
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:4px;cursor:pointer;transition:all 0.2s;border-radius:10px;
+}
+.ni .ico{font-size:21px;transition:transform 0.2s;}
+.ni .lbl{font-size:9px;color:var(--muted);font-weight:700;letter-spacing:0.5px;text-transform:uppercase;transition:color 0.2s;}
+.ni.on .lbl{color:var(--gold);}
+.ni.on .ico{transform:scale(1.1);}
+
+/* ══════════════════════
+   LANDING SCREEN
+══════════════════════ */
+#s-land{background:var(--dark);overflow:hidden;position:relative;}
+.land-orbs{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
+.orb{position:absolute;border-radius:50%;filter:blur(80px);animation:glow 5s ease-in-out infinite;}
+.orb1{width:350px;height:350px;background:radial-gradient(#F5C51828,transparent);top:-80px;right:-100px;}
+.orb2{width:280px;height:280px;background:radial-gradient(#00D26A20,transparent);bottom:120px;left:-80px;animation-delay:2.5s;}
+.orb3{width:200px;height:200px;background:radial-gradient(#FF475720,transparent);top:45%;right:10%;animation-delay:1.5s;}
+
+.ticker-bar{
+  background:rgba(245,197,24,0.07);border-bottom:1px solid rgba(245,197,24,0.12);
+  overflow:hidden;padding:9px 0;flex-shrink:0;position:relative;z-index:2;
+}
+.ticker-track{display:flex;animation:ticker 22s linear infinite;width:max-content;}
+.t-item{white-space:nowrap;font-size:11px;font-weight:700;color:rgba(245,197,24,0.7);
+  padding:0 20px;letter-spacing:1px;text-transform:uppercase;}
+.t-item em{color:rgba(245,197,24,0.35);font-style:normal;margin:0 6px;}
+
+.land-body{
+  position:relative;z-index:2;
+  display:flex;flex-direction:column;align-items:center;
+  padding:36px 24px 110px;text-align:center;
+}
+
+.brand-pill{
+  display:inline-flex;align-items:center;gap:7px;
+  background:var(--goldDim);border:1px solid var(--goldBorder);
+  border-radius:50px;padding:7px 16px;
+  font-size:11px;color:var(--gold);font-weight:700;
+  letter-spacing:1.5px;text-transform:uppercase;margin-bottom:30px;
+  animation:fadeUp 0.5s ease;
+}
+
+.hero-h{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(40px,12vw,62px);
+  font-weight:800;line-height:0.95;margin-bottom:8px;
+  animation:fadeUp 0.6s ease 0.1s both;
+}
+.hero-h .g{color:var(--gold);}
+.hero-h .w{color:#fff;}
+
+.hero-p{
+  font-size:15px;color:#888;max-width:290px;line-height:1.7;
+  margin:14px auto 32px;
+  animation:fadeUp 0.6s ease 0.2s both;
+}
+.hero-p b{color:var(--text);}
+
+/* Prize showcase */
+.prizes-wrap{
+  width:100%;max-width:360px;margin-bottom:34px;
+  animation:fadeUp 0.6s ease 0.3s both;
+}
+.prizes-label{
+  font-size:11px;color:var(--muted);font-weight:700;
+  letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;
+  text-align:left;
+}
+.prizes-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;}
+.pz-card{
+  background:var(--dark3);border:1px solid var(--border);
+  border-radius:14px;padding:14px 12px 12px;text-align:center;
+  cursor:pointer;transition:all 0.28s;position:relative;overflow:hidden;
+}
+.pz-card::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(245,197,24,0.06),transparent);
+  opacity:0;transition:opacity 0.3s;
+}
+.pz-card:hover{border-color:rgba(245,197,24,0.45);transform:translateY(-4px);}
+.pz-card:hover::after{opacity:1;}
+.pz-icon{font-size:30px;display:block;margin-bottom:7px;animation:float 3s ease-in-out infinite;}
+.pz-card:nth-child(2) .pz-icon{animation-delay:0.6s;}
+.pz-card:nth-child(3) .pz-icon{animation-delay:1.2s;}
+.pz-card:nth-child(4) .pz-icon{animation-delay:1.8s;}
+.pz-name{font-size:12px;font-weight:700;color:var(--text);}
+.pz-sub{font-size:10px;color:var(--muted);margin-top:2px;}
+.pz-type{
+  position:absolute;top:8px;right:8px;
+  font-size:8px;font-weight:800;padding:2px 7px;
+  border-radius:4px;letter-spacing:0.5px;text-transform:uppercase;
+}
+.tp-draw{background:rgba(245,197,24,0.18);color:var(--gold);}
+.tp-sure{background:rgba(0,210,106,0.18);color:var(--green);}
+
+.land-btns{width:100%;max-width:320px;display:flex;flex-direction:column;gap:10px;animation:fadeUp 0.6s ease 0.4s both;}
+
+.social-line{
+  display:flex;align-items:center;gap:10px;margin-top:22px;
+  font-size:12px;color:var(--muted);
+  animation:fadeUp 0.6s ease 0.5s both;
+}
+.avatars{display:flex;}
+.av{
+  width:28px;height:28px;border-radius:50%;
+  border:2px solid var(--dark);margin-right:-9px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;
+}
+.av1{background:linear-gradient(135deg,#F5C518,#FF6B35);}
+.av2{background:linear-gradient(135deg,#00D26A,#0066FF);}
+.av3{background:linear-gradient(135deg,#FF4757,#C44DFF);}
+.av4{background:linear-gradient(135deg,#FFB347,#FF69B4);}
+
+/* ══════════════════════
+   REGISTER SCREEN
+══════════════════════ */
+#s-reg{background:var(--dark);padding-bottom:40px;}
+.reg-top{
+  padding:48px 24px 28px;
+  background:linear-gradient(180deg,var(--dark2) 0%,var(--dark) 100%);
+  border-bottom:1px solid var(--border);
+}
+.back-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  color:var(--muted);font-size:13px;cursor:pointer;
+  margin-bottom:26px;transition:color 0.2s;background:none;border:none;
+  font-family:'Plus Jakarta Sans',sans-serif;
+}
+.back-btn:hover{color:var(--text);}
+.reg-h{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;margin-bottom:6px;}
+.reg-s{font-size:13px;color:var(--muted);line-height:1.5;}
+.reg-s b{color:var(--gold);}
+
+.reg-body{padding:28px 24px;}
+
+.goal-label{
+  font-size:11px;color:var(--muted);font-weight:700;
+  letter-spacing:0.8px;text-transform:uppercase;margin-bottom:12px;
+}
+.goal-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:24px;}
+.goal-opt{
+  border:1.5px solid var(--border);border-radius:12px;
+  padding:13px 10px;text-align:center;cursor:pointer;
+  transition:all 0.22s;background:var(--dark3);
+}
+.goal-opt:hover{border-color:rgba(245,197,24,0.4);}
+.goal-opt.sel{border-color:var(--gold);background:var(--goldDim);}
+.go-icon{font-size:24px;margin-bottom:5px;}
+.go-name{font-size:11px;font-weight:700;color:var(--text);}
+.go-tag{font-size:9px;color:var(--muted);margin-top:1px;}
+.go-badge{
+  font-size:8px;font-weight:700;padding:2px 6px;border-radius:4px;
+  display:inline-block;margin-top:4px;text-transform:uppercase;
+}
+.gb-draw{background:rgba(245,197,24,0.15);color:var(--gold);}
+.gb-sure{background:rgba(0,210,106,0.15);color:var(--green);}
+
+.divider{height:1px;background:var(--border);margin:24px 0;}
+
+.tcheck{
+  display:flex;align-items:flex-start;gap:10px;
+  font-size:12px;color:var(--muted);line-height:1.6;
+  cursor:pointer;margin:18px 0 24px;
+}
+.tcheck input{width:16px;height:16px;flex-shrink:0;margin-top:2px;accent-color:var(--gold);}
+.tcheck a{color:var(--gold);text-decoration:none;}
+
+/* ══════════════════════
+   DASHBOARD SCREEN
+══════════════════════ */
+#s-dash{padding-bottom:80px;background:var(--dark);}
+.dash-top{
+  background:linear-gradient(135deg,#0d0d0d,#111);
+  padding:44px 24px 28px;border-bottom:1px solid var(--border);
+  position:relative;overflow:hidden;
+}
+.dash-top::after{
+  content:'';position:absolute;
+  width:250px;height:250px;border-radius:50%;
+  background:radial-gradient(rgba(245,197,24,0.1),transparent);
+  top:-80px;right:-60px;pointer-events:none;
+}
+.dash-hello{font-size:13px;color:var(--muted);margin-bottom:3px;}
+.dash-uname{
+  font-family:'Syne',sans-serif;font-size:24px;font-weight:800;margin-bottom:22px;
+}
+.dash-uname b{color:var(--gold);}
+
+.pts-card{
+  background:linear-gradient(135deg,#191200,#0d1400,var(--dark3));
+  border:1px solid rgba(245,197,24,0.18);
+  border-radius:var(--radius);padding:22px 20px;
+  position:relative;overflow:hidden;
+}
+.pts-card::before{
+  content:'';position:absolute;top:0;right:0;
+  width:120px;height:120px;
+  background:radial-gradient(rgba(245,197,24,0.07),transparent);
+  pointer-events:none;
+}
+.pts-lbl{font-size:11px;color:var(--muted);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
+.pts-num{
+  font-family:'Syne',sans-serif;font-size:52px;font-weight:800;
+  color:var(--gold);line-height:1;margin-bottom:14px;
+}
+.pts-num sup{font-size:22px;font-weight:600;color:rgba(245,197,24,0.55);vertical-align:super;}
+.pts-row{display:flex;gap:20px;}
+.pts-stat{font-size:12px;color:var(--muted);}
+.pts-stat strong{color:var(--text);margin-right:3px;}
+
+.prog-wrap{margin-top:18px;}
+.prog-head{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:7px;}
+.prog-track{height:7px;background:var(--dark5);border-radius:50px;overflow:hidden;}
+.prog-fill{
+  height:100%;border-radius:50px;
+  background:linear-gradient(90deg,#c9a200,var(--gold),#FFD700);
+  transition:width 1s cubic-bezier(0.4,0,0.2,1);
+}
+
+.dash-body{padding:24px 24px 0;}
+
+/* Stats row */
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px;}
+.stat-box{
+  background:var(--dark3);border:1px solid var(--border);
+  border-radius:var(--radiusSm);padding:14px 12px;text-align:center;
+}
+.stat-val{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--gold);}
+.stat-lbl{font-size:10px;color:var(--muted);margin-top:3px;font-weight:600;}
+
+/* Section header */
+.sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.sec-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;}
+.sec-more{font-size:12px;color:var(--gold);cursor:pointer;font-weight:600;}
+
+/* Task cards */
+.tasks-list{display:flex;flex-direction:column;gap:10px;margin-bottom:28px;}
+.task-card{
+  background:var(--dark3);border:1px solid var(--border);
+  border-radius:var(--radiusSm);padding:16px;
+  display:flex;align-items:center;gap:14px;
+  transition:all 0.25s;cursor:pointer;position:relative;overflow:hidden;
+}
+.task-card::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;
+  width:3px;border-radius:2px;transition:opacity 0.2s;
+}
+.task-card.tc-aff::before{background:var(--gold);}
+.task-card.tc-ref::before{background:var(--green);}
+.task-card.tc-draw::before{background:#6fa3ff;}
+.task-card:hover{border-color:var(--dark5);transform:translateX(3px);}
+.task-card.done{opacity:0.5;}
+.tc-icon{
+  width:46px;height:46px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;flex-shrink:0;
+}
+.tc-aff .tc-icon{background:rgba(245,197,24,0.1);}
+.tc-ref .tc-icon{background:rgba(0,210,106,0.1);}
+.tc-draw .tc-icon{background:rgba(111,163,255,0.1);}
+.tc-info{flex:1;min-width:0;}
+.tc-title{font-size:14px;font-weight:600;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.tc-desc{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.tc-right{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0;}
+.tc-pts{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:var(--gold);}
+.tc-pts span{font-size:10px;font-weight:600;}
+.tc-done-mark{font-size:20px;}
+
+/* ══════════════════════
+   TASKS SCREEN
+══════════════════════ */
+#s-tasks{padding-bottom:80px;background:var(--dark);}
+.tasks-top{
+  padding:44px 24px 24px;
+  background:linear-gradient(180deg,var(--dark2),var(--dark));
+  border-bottom:1px solid var(--border);
+}
+.tasks-top h1{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;margin-bottom:4px;}
+.tasks-top p{font-size:13px;color:var(--muted);}
+.filter-row{display:flex;gap:8px;overflow-x:auto;padding:20px 24px 0;scrollbar-width:none;}
+.filter-row::-webkit-scrollbar{display:none;}
+.filter-chip{
+  flex-shrink:0;background:var(--dark3);border:1px solid var(--border);
+  border-radius:50px;padding:7px 16px;font-size:12px;font-weight:600;
+  cursor:pointer;transition:all 0.2s;color:var(--muted);white-space:nowrap;
+}
+.filter-chip.on{background:var(--goldDim);border-color:var(--goldBorder);color:var(--gold);}
+.tasks-body{padding:16px 24px;}
+.task-section{margin-bottom:28px;}
+.ts-header{
+  display:flex;align-items:center;gap:8px;margin-bottom:12px;
+  font-size:12px;font-weight:700;color:var(--muted);
+  letter-spacing:0.8px;text-transform:uppercase;
+}
+.ts-line{flex:1;height:1px;background:var(--border);}
+
+/* ══════════════════════
+   PRIZES SCREEN
+══════════════════════ */
+#s-prizes{padding-bottom:80px;background:var(--dark);}
+.prizes-top{
+  padding:44px 24px 28px;
+  background:linear-gradient(180deg,var(--dark2),var(--dark));
+  border-bottom:1px solid var(--border);
+}
+.prizes-top h1{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;margin-bottom:4px;}
+.prizes-top p{font-size:13px;color:var(--muted);}
+.pts-quick{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--goldDim);border:1px solid var(--goldBorder);
+  border-radius:50px;padding:8px 16px;font-size:14px;
+  font-weight:700;color:var(--gold);margin-top:14px;
+}
+.prizes-body{padding:24px 24px;}
+.prizes-tabs{display:flex;gap:8px;margin-bottom:20px;}
+.ptab{
+  flex:1;padding:10px;border-radius:10px;text-align:center;
+  font-size:13px;font-weight:700;cursor:pointer;transition:all 0.2s;
+  background:var(--dark3);border:1px solid var(--border);color:var(--muted);
+}
+.ptab.on{background:var(--goldDim);border-color:var(--goldBorder);color:var(--gold);}
+
+.prize-list{display:flex;flex-direction:column;gap:12px;}
+.prize-item{
+  background:var(--dark3);border:1px solid var(--border);
+  border-radius:var(--radius);padding:18px;
+  display:flex;align-items:center;gap:14px;
+  position:relative;overflow:hidden;transition:all 0.25s;
+}
+.prize-item:hover{border-color:var(--dark5);}
+.pi-icon{
+  width:56px;height:56px;border-radius:14px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:28px;
+}
+.pi-gold{background:linear-gradient(135deg,rgba(245,197,24,0.15),rgba(245,197,24,0.05));}
+.pi-green{background:linear-gradient(135deg,rgba(0,210,106,0.15),rgba(0,210,106,0.05));}
+.pi-blue{background:linear-gradient(135deg,rgba(111,163,255,0.15),rgba(111,163,255,0.05));}
+.pi-info{flex:1;}
+.pi-name{font-size:15px;font-weight:700;margin-bottom:3px;}
+.pi-desc{font-size:12px;color:var(--muted);margin-bottom:8px;line-height:1.4;}
+.pi-cost{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:12px;font-weight:700;
+}
+.pi-cost .amt{font-family:'Syne',sans-serif;font-size:16px;color:var(--gold);}
+.pi-cost .lbl{color:var(--muted);font-size:11px;}
+.pi-action{flex-shrink:0;}
+
+.draw-card{
+  background:linear-gradient(135deg,#191200,#0d1400);
+  border:1px solid rgba(245,197,24,0.2);
+  border-radius:var(--radius);padding:22px;margin-bottom:16px;
+  position:relative;overflow:hidden;
+}
+.draw-card::before{
+  content:'🏆';position:absolute;right:-10px;bottom:-10px;
+  font-size:80px;opacity:0.06;
+}
+.draw-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;margin-bottom:4px;}
+.draw-prize{font-size:28px;font-weight:800;color:var(--gold);font-family:'Syne',sans-serif;margin-bottom:12px;}
+.draw-meta{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;}
+.dm-item{font-size:12px;color:var(--muted);}
+.dm-item strong{color:var(--text);}
+.draw-bar{height:5px;background:var(--dark5);border-radius:50px;overflow:hidden;margin-bottom:6px;}
+.draw-fill{height:100%;background:linear-gradient(90deg,var(--gold),#FFD700);border-radius:50px;}
+.draw-prog-text{font-size:11px;color:var(--muted);}
+.draw-tickets{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-top:14px;padding-top:14px;border-top:1px solid var(--border);
+}
+.dt-label{font-size:12px;color:var(--muted);}
+.dt-count{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--gold);}
+
+/* ══════════════════════
+   REFER SCREEN
+══════════════════════ */
+#s-refer{padding-bottom:80px;background:var(--dark);}
+.refer-top{
+  padding:44px 24px 28px;text-align:center;
+  background:linear-gradient(180deg,var(--dark2),var(--dark));
+  border-bottom:1px solid var(--border);
+}
+.refer-icon{font-size:52px;margin-bottom:12px;display:block;animation:float 3s ease-in-out infinite;}
+.refer-top h1{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;margin-bottom:6px;}
+.refer-top p{font-size:13px;color:var(--muted);line-height:1.6;}
+.refer-top p b{color:var(--gold);}
+.refer-body{padding:24px 24px;}
+
+.ref-code-box{
+  background:var(--dark3);border:1px solid var(--goldBorder);
+  border-radius:var(--radius);padding:20px;margin-bottom:20px;
+  text-align:center;
+}
+.rcb-lbl{font-size:11px;color:var(--muted);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;}
+.rcb-code{
+  font-family:'Syne',sans-serif;font-size:28px;font-weight:800;
+  color:var(--gold);letter-spacing:4px;margin-bottom:14px;
+}
+.ref-link-box{
+  background:var(--dark4);border:1px solid var(--border);
+  border-radius:var(--radiusSm);padding:12px 14px;
+  font-size:12px;color:var(--muted);word-break:break-all;
+  margin-bottom:14px;line-height:1.5;
+}
+.ref-share-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.share-btn{
+  display:flex;align-items:center;justify-content:center;gap:7px;
+  padding:12px;border-radius:var(--radiusSm);font-size:13px;
+  font-weight:700;cursor:pointer;transition:all 0.2s;border:none;
+  font-family:'Plus Jakarta Sans',sans-serif;
+}
+.sb-wa{background:#25D366;color:#fff;}
+.sb-wa:hover{box-shadow:0 6px 18px rgba(37,211,102,0.3);}
+.sb-copy{background:var(--dark4);color:var(--text);border:1px solid var(--border);}
+.sb-copy:hover{background:var(--dark5);}
+
+.ref-how{margin-top:28px;}
+.rh-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;margin-bottom:16px;}
+.rh-steps{display:flex;flex-direction:column;gap:12px;}
+.rh-step{
+  display:flex;align-items:flex-start;gap:14px;
+  background:var(--dark3);border:1px solid var(--border);
+  border-radius:var(--radiusSm);padding:14px;
+}
+.rh-num{
+  width:32px;height:32px;border-radius:50%;
+  background:var(--goldDim);border:1px solid var(--goldBorder);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:800;color:var(--gold);flex-shrink:0;
+}
+.rh-text h4{font-size:13px;font-weight:700;margin-bottom:2px;}
+.rh-text p{font-size:12px;color:var(--muted);line-height:1.5;}
+
+/* ══════════════════════
+   MODAL
+══════════════════════ */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,0.85);
+  z-index:500;display:none;align-items:flex-end;justify-content:center;
+  backdrop-filter:blur(4px);
+}
+.modal-overlay.open{display:flex;}
+.modal-box{
+  background:var(--dark3);border:1px solid var(--border);
+  border-radius:24px 24px 0 0;padding:28px 24px 48px;
+  width:100%;max-width:480px;max-height:85vh;overflow-y:auto;
+  animation:fadeUp 0.35s ease;
+}
+.modal-handle{
+  width:36px;height:4px;background:var(--dark5);
+  border-radius:50px;margin:0 auto 24px;
+}
+.modal-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:6px;}
+.modal-sub{font-size:13px;color:var(--muted);margin-bottom:24px;line-height:1.5;}
+
+/* WIN MODAL */
+#win-modal .modal-box{text-align:center;padding-top:36px;}
+.win-trophy{font-size:64px;display:block;animation:bounceIn 0.6s ease;margin-bottom:16px;}
+.win-title{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;margin-bottom:8px;}
+.win-title span{color:var(--gold);}
+.win-pts{
+  font-family:'Syne',sans-serif;font-size:52px;font-weight:800;
+  color:var(--gold);animation:countUp 0.6s ease 0.3s both;margin:12px 0;
+}
+.win-pts sup{font-size:22px;color:rgba(245,197,24,0.6);}
+.win-msg{font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:24px;}
+.confetti-row{font-size:24px;margin-bottom:20px;letter-spacing:4px;}
+
+/* ══════════════════════
+   HOW IT WORKS
+══════════════════════ */
+.how-section{
+  margin:0 24px 28px;
+  background:var(--dark3);border:1px solid var(--border);
+  border-radius:var(--radius);padding:20px;
+}
+.how-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin-bottom:16px;}
+.how-steps{display:flex;flex-direction:column;gap:0;}
+.how-step{display:flex;align-items:flex-start;gap:14px;padding:12px 0;}
+.how-step:not(:last-child){border-bottom:1px solid var(--border);}
+.hs-num{
+  width:30px;height:30px;border-radius:50%;flex-shrink:0;
+  background:var(--goldDim);border:1px solid var(--goldBorder);
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:800;color:var(--gold);
+}
+.hs-text h4{font-size:13px;font-weight:700;margin-bottom:2px;}
+.hs-text p{font-size:12px;color:var(--muted);line-height:1.4;}
+
+/* ══════════════════════
+   LEADERBOARD WIDGET
+══════════════════════ */
+.leaders-section{margin:0 24px 28px;}
+.lead-list{display:flex;flex-direction:column;gap:8px;}
+.lead-item{
+  display:flex;align-items:center;gap:12px;
+  background:var(--dark3);border:1px solid var(--border);
+  border-radius:var(--radiusSm);padding:12px 14px;
+}
+.lead-rank{
+  width:28px;height:28px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:800;flex-shrink:0;
+}
+.rank1{background:linear-gradient(135deg,#FFD700,#F5C518);color:#000;}
+.rank2{background:linear-gradient(135deg,#C0C0C0,#A9A9A9);color:#000;}
+.rank3{background:linear-gradient(135deg,#CD7F32,#A0522D);color:#fff;}
+.rankN{background:var(--dark4);color:var(--muted);}
+.lead-av{
+  width:34px;height:34px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:700;flex-shrink:0;
+}
+.lead-name{flex:1;font-size:13px;font-weight:600;}
+.lead-pts{font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:var(--gold);}
+.lead-pts span{font-size:10px;color:var(--muted);}
+
+/* Skeletons */
+.skel{
+  background:linear-gradient(90deg,var(--dark3) 25%,var(--dark4) 50%,var(--dark3) 75%);
+  background-size:400px 100%;
+  animation:shimmer 1.5s infinite;
+  border-radius:8px;
+}
+
+/* Scrollable page content */
+.scroll-body{overflow-y:auto;flex:1;}
+</style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<!-- BOTTOM NAV -->
+<nav id="bnav">
+  <div class="ni on" onclick="goTab('dash')" id="ni-dash">
+    <div class="ico">🏠</div>
+    <div class="lbl">Home</div>
+  </div>
+  <div class="ni" onclick="goTab('tasks')" id="ni-tasks">
+    <div class="ico">⚡</div>
+    <div class="lbl">Tasks</div>
+  </div>
+  <div class="ni" onclick="goTab('prizes')" id="ni-prizes">
+    <div class="ico">🎁</div>
+    <div class="lbl">Prizes</div>
+  </div>
+  <div class="ni" onclick="goTab('refer')" id="ni-refer">
+    <div class="ico">👥</div>
+    <div class="lbl">Refer</div>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════
+  SCREEN: LANDING
+══════════════════════════════════ -->
+<div class="screen active" id="s-land">
+  <div class="land-orbs">
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="orb orb3"></div>
+  </div>
+
+  <!-- Ticker -->
+  <div class="ticker-bar">
+    <div class="ticker-track">
+      <span class="t-item">🏆 James from Kenya just won ₦5,000 airtime<em>•</em></span>
+      <span class="t-item">📱 Sara completed 3 tasks today<em>•</em></span>
+      <span class="t-item">🎉 New weekly draw: Toyota Camry<em>•</em></span>
+      <span class="t-item">💰 Over $12,000 in rewards claimed<em>•</em></span>
+      <span class="t-item">🔥 Victor just referred 5 friends<em>•</em></span>
+      <span class="t-item">🏆 James from Kenya just won ₦5,000 airtime<em>•</em></span>
+      <span class="t-item">📱 Sara completed 3 tasks today<em>•</em></span>
+      <span class="t-item">🎉 New weekly draw: Toyota Camry<em>•</em></span>
+      <span class="t-item">💰 Over $12,000 in rewards claimed<em>•</em></span>
+      <span class="t-item">🔥 Victor just referred 5 friends<em>•</em></span>
+    </div>
+  </div>
+
+  <div class="land-body">
+    <div class="brand-pill">🪙 EarnDrop — Earn & Win</div>
+
+    <h1 class="hero-h">
+      <span class="w">Complete</span>
+      <span class="g">Tasks.</span>
+      <span class="w">Win</span>
+      <span class="g">Big.</span>
+    </h1>
+
+    <p class="hero-p">
+      Do simple tasks, earn points, redeem for <b>real airtime & data</b> — or enter draws to win <b>cars, TVs & cash.</b>
+    </p>
+
+    <div class="prizes-wrap">
+      <div class="prizes-label">🎯 Available prizes</div>
+      <div class="prizes-grid">
+        <div class="pz-card">
+          <span class="pz-type tp-draw">Monthly Draw</span>
+          <span class="pz-icon">🚗</span>
+          <div class="pz-name">Toyota Camry</div>
+          <div class="pz-sub">2,000 pts/ticket</div>
+        </div>
+        <div class="pz-card">
+          <span class="pz-type tp-draw">Weekly Draw</span>
+          <span class="pz-icon">📺</span>
+          <div class="pz-name">Smart TV 43"</div>
+          <div class="pz-sub">500 pts/ticket</div>
+        </div>
+        <div class="pz-card">
+          <span class="pz-type tp-sure">Guaranteed</span>
+          <span class="pz-icon">📱</span>
+          <div class="pz-name">Airtime / Data</div>
+          <div class="pz-sub">From 100 pts</div>
+        </div>
+        <div class="pz-card">
+          <span class="pz-type tp-sure">Guaranteed</span>
+          <span class="pz-icon">💵</span>
+          <div class="pz-name">Cash Voucher</div>
+          <div class="pz-sub">From 300 pts</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="land-btns">
+      <button class="btn btn-gold" onclick="show('s-reg')">🚀 Start Earning Free</button>
+      <button class="btn btn-outline" onclick="show('s-reg')">Already have account? Sign In</button>
+    </div>
+
+    <div class="social-line">
+      <div class="avatars">
+        <div class="av av1">J</div>
+        <div class="av av2">S</div>
+        <div class="av av3">M</div>
+        <div class="av av4">A</div>
+      </div>
+      <span>48,302 earners worldwide</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+  SCREEN: REGISTER
+══════════════════════════════════ -->
+<div class="screen" id="s-reg">
+  <div class="reg-top">
+    <button class="back-btn" onclick="show('s-land')">← Back</button>
+    <h1 class="reg-h">Create Account</h1>
+    <p class="reg-s">Join free — your first <b>50 bonus points</b> await 🎁</p>
+  </div>
+
+  <div class="reg-body scroll-body">
+    <!-- Goal picker -->
+    <div class="goal-label">🎯 What's your goal?</div>
+    <div class="goal-grid" id="goal-grid">
+      <div class="goal-opt sel" data-goal="car" onclick="pickGoal(this)">
+        <div class="go-icon">🚗</div>
+        <div class="go-name">Win a Car</div>
+        <div class="go-tag">Monthly Draw</div>
+        <div class="go-badge gb-draw">Draw</div>
+      </div>
+      <div class="goal-opt" data-goal="tv" onclick="pickGoal(this)">
+        <div class="go-icon">📺</div>
+        <div class="go-name">Win a TV</div>
+        <div class="go-tag">Weekly Draw</div>
+        <div class="go-badge gb-draw">Draw</div>
+      </div>
+      <div class="goal-opt" data-goal="airtime" onclick="pickGoal(this)">
+        <div class="go-icon">📱</div>
+        <div class="go-name">Get Airtime</div>
+        <div class="go-tag">Guaranteed</div>
+        <div class="go-badge gb-sure">Guaranteed</div>
+      </div>
+      <div class="goal-opt" data-goal="cash" onclick="pickGoal(this)">
+        <div class="go-icon">💵</div>
+        <div class="go-name">Cash Voucher</div>
+        <div class="go-tag">Guaranteed</div>
+        <div class="go-badge gb-sure">Guaranteed</div>
+      </div>
+      <div class="goal-opt" data-goal="fan" onclick="pickGoal(this)">
+        <div class="go-icon">🌀</div>
+        <div class="go-name">Win a Fan</div>
+        <div class="go-tag">Weekly Draw</div>
+        <div class="go-badge gb-draw">Draw</div>
+      </div>
+      <div class="goal-opt" data-goal="gen" onclick="pickGoal(this)">
+        <div class="go-icon">⚡</div>
+        <div class="go-name">Win Generator</div>
+        <div class="go-tag">Monthly Draw</div>
+        <div class="go-badge gb-draw">Draw</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="input-g">
+      <label>Full Name</label>
+      <input type="text" id="reg-name" placeholder="e.g. James Okafor" maxlength="40">
+    </div>
+    <div class="input-g">
+      <label>Email Address</label>
+      <input type="email" id="reg-email" placeholder="you@example.com">
+    </div>
+    <div class="input-g">
+      <label>Phone Number</label>
+      <input type="tel" id="reg-phone" placeholder="+234 800 000 0000">
+    </div>
+    <div class="input-g">
+      <label>Country</label>
+      <select id="reg-country">
+        <option value="">Select country</option>
+        <option>Nigeria</option>
+        <option>Ghana</option>
+        <option>Kenya</option>
+        <option>South Africa</option>
+        <option>United Kingdom</option>
+        <option>United States</option>
+        <option>Canada</option>
+        <option>Other</option>
+      </select>
+    </div>
+    <div class="input-g">
+      <label>Create Password</label>
+      <input type="password" id="reg-pass" placeholder="Minimum 6 characters">
+    </div>
+
+    <!-- Referral (optional) -->
+    <div class="input-g">
+      <label>Referral Code (Optional)</label>
+      <input type="text" id="reg-ref" placeholder="e.g. JAMES2024" maxlength="12" style="text-transform:uppercase">
+    </div>
+
+    <label class="tcheck">
+      <input type="checkbox" id="reg-terms">
+      I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>. I understand prizes marked "Draw" are entry-based with one winner selected fairly.
+    </label>
+
+    <button class="btn btn-gold" onclick="doRegister()">🎉 Create My Account & Get 50 Points</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+  SCREEN: DASHBOARD
+══════════════════════════════════ -->
+<div class="screen" id="s-dash">
+  <div class="dash-top">
+    <div class="dash-hello">Welcome back 👋</div>
+    <div class="dash-uname" id="d-name">Loading...</div>
+
+    <div class="pts-card">
+      <div class="pts-lbl">Total Points</div>
+      <div class="pts-num" id="d-pts">0<sup> pts</sup></div>
+      <div class="pts-row">
+        <div class="pts-stat"><strong id="d-tasks">0</strong>Tasks done</div>
+        <div class="pts-stat"><strong id="d-refs">0</strong>Referrals</div>
+        <div class="pts-stat"><strong id="d-tickets">0</strong>Draw tickets</div>
+      </div>
+      <div class="prog-wrap">
+        <div class="prog-head">
+          <span id="prog-label">Progress to next reward</span>
+          <span id="prog-pct">0%</span>
+        </div>
+        <div class="prog-track">
+          <div class="prog-fill" id="prog-fill" style="width:0%"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dash-body scroll-body">
+    <!-- Stats -->
+    <div class="stats-row" style="margin-top:24px;">
+      <div class="stat-box">
+        <div class="stat-val" id="ds-earned">0</div>
+        <div class="stat-lbl">Pts Earned</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val" id="ds-redeemed">0</div>
+        <div class="stat-lbl">Redeemed</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val" id="ds-streak">1</div>
+        <div class="stat-lbl">Day Streak 🔥</div>
+      </div>
+    </div>
+
+    <!-- Quick tasks -->
+    <div class="sec-head">
+      <div class="sec-title">Today's Tasks</div>
+      <div class="sec-more" onclick="goTab('tasks')">See all →</div>
+    </div>
+    <div class="tasks-list" id="dash-tasks"></div>
+
+    <!-- How it works -->
+    <div class="how-section">
+      <div class="how-title">⚡ How EarnDrop Works</div>
+      <div class="how-steps">
+        <div class="how-step">
+          <div class="hs-num">1</div>
+          <div class="hs-text">
+            <h4>Complete Tasks</h4>
+            <p>Click affiliate links, sign up for apps, watch partner content</p>
+          </div>
+        </div>
+        <div class="how-step">
+          <div class="hs-num">2</div>
+          <div class="hs-text">
+            <h4>Earn Points</h4>
+            <p>Every task gives you points. Refer friends for bonus points</p>
+          </div>
+        </div>
+        <div class="how-step">
+          <div class="hs-num">3</div>
+          <div class="hs-text">
+            <h4>Redeem or Enter Draws</h4>
+            <p>Swap points for airtime instantly, or buy tickets for big prize draws</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Leaderboard -->
+    <div class="leaders-section">
+      <div class="sec-head">
+        <div class="sec-title">🏅 Top Earners</div>
+      </div>
+      <div class="lead-list" id="leaders-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+  SCREEN: ALL TASKS
+══════════════════════════════════ -->
+<div class="screen" id="s-tasks">
+  <div class="tasks-top">
+    <h1>All Tasks</h1>
+<div class="task" style="background:#e6f7ff;"><h3>💔 A Message From the Dead</h3><p>He ignored her call… now she’s texting him</p><a href="https://paystack.com/buy/she-texted-me-after-she-died-part-1-kopzku" target="_blank">Start Task</a><span>+100 pts</span></div>
+<div class="task" style="background:#e6f7ff;"><h3>📘 The Story of Us</h3><p>A deep story about life, destiny, and purpose</p><a href="https://mrsmile.gumroad.com/l/ffmcd" target="_blank">Start Task</a><span>+100 pts</span></div>
+<div class="task" style="background:#e6f7ff;"><h3>📱 WhatsApp Selling Blueprint</h3><p>Learn how to turn chats into daily income</p><a href="https://selar.com/0212l43d3a" target="_blank">Start Task</a><span>+120 pts</span></div>
+<div class="task" style="background:#e6f7ff;"><h3>💰 75 Profitable Nigerian Businesses</h3><p>Discover businesses you can start immediately in Nigeria</p><a href="https://selar.com/da6560tl0v" target="_blank">Start Task</a><span>+150 pts</span></div>
+    <p>Complete tasks to earn points</p>
   </div>
   <div class="filter-row" id="filter-row">
     <div class="filter-chip on" data-filter="all" onclick="filterTasks(this)">All Tasks</div>
@@ -177,6 +1142,10 @@ let APP = {
 };
 
 const TASKS = [
+  { id:'t7', cat:'social', icon:'🐦', title:'Share on Twitter/X', desc:'Tweet about EarnDrop and tag us', pts:40, url:'#', type:'tc-ref', done:false },
+  { id:'t8', cat:'bonus', icon:'📝', title:'Complete Profile', desc:'Add your profile photo & bio', pts:70, url:'#', type:'tc-aff', done:false },
+  { id:'t9', cat:'bonus', icon:'🎯', title:'Daily Check-in', desc:'Log in every day for streak bonus', pts:20, url:'#', type:'tc-ref', done:false },
+  { id:'t10', cat:'refer', icon:'👥', title:'Refer a Friend', desc:'Earn 100pts per successful referral', pts:100, url:'#', type:'tc-ref', done:false },
 ];
 
 const GUARANTEED_PRIZES = [
@@ -380,6 +1349,7 @@ function doTask(taskId) {
 
 function renderAllTasks() {
   const body = document.getElementById('all-tasks-body');
+  const cats = { affiliate:'💰 Affiliate Tasks', social:'📣 Social Tasks', bonus:'🎁 Bonus Tasks', refer:'👥 Referral Tasks' };
   let html = '';
   for (const [cat, label] of Object.entries(cats)) {
     const filtered = TASKS.filter(t => t.cat === cat);
@@ -396,6 +1366,7 @@ function filterTasks(el) {
   el.classList.add('on');
   const f = el.dataset.filter;
   const body = document.getElementById('all-tasks-body');
+  const cats = { affiliate:'💰 Affiliate Tasks', social:'📣 Social Tasks', bonus:'🎁 Bonus Tasks', refer:'👥 Referral Tasks' };
   let html = '';
   for (const [cat, label] of Object.entries(cats)) {
     if (f !== 'all' && cat !== f) continue;
@@ -636,4 +1607,9 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 });
 </script>
+<div class="task"><h3>💰 75 Profitable Nigerian Businesses</h3><p>Discover businesses you can start immediately in Nigeria</p><a href="https://selar.com/da6560tl0v" target="_blank">Start Task</a><span>+150 pts</span></div>
+<div class="task"><h3>📱 WhatsApp Selling Blueprint</h3><p>Learn how to turn chats into daily income</p><a href="https://selar.com/0212l43d3a" target="_blank">Start Task</a><span>+120 pts</span></div>
+<div class="task"><h3>📘 The Story of Us</h3><p>A deep story about life, destiny, and purpose</p><a href="https://mrsmile.gumroad.com/l/ffmcd" target="_blank">Start Task</a><span>+100 pts</span></div>
+<div class="task"><h3>💔 A Message From the Dead</h3><p>He ignored her call… now she’s texting him</p><a href="https://paystack.com/buy/she-texted-me-after-she-died-part-1-kopzku" target="_blank">Start Task</a><span>+100 pts</span></div>
+</body>
 </html>
