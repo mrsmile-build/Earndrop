@@ -958,7 +958,6 @@ select option{background:var(--dark3);}
 <div class="screen" id="s-tasks">
   <div class="tasks-top">
     <h1>All Tasks</h1>
-🔥 Complete these to start earning real value
 <p style="color:red;font-weight:bold;">⚠️ Limited access: Only serious people are using these to change their income.</p>
 <div class="task" style="background:#e6f7ff;"><h3>💔 A Message From the Dead</h3><p>He ignored her call… she died… now she is texting him again. Would you open it?</p><a href="https://paystack.com/buy/she-texted-me-after-she-died-part-1-kopzku" target="_blank">🔥 Start Now</a><span>+100 pts</span></div>
 <small style="color:green;">✔ People are already making money from this</small>
@@ -972,7 +971,6 @@ select option{background:var(--dark3);}
   </div>
   <div class="filter-row" id="filter-row">
     <div class="filter-chip on" data-filter="all" onclick="filterTasks(this)">All Tasks</div>
-🔥 Complete these to start earning real value
 <p style="color:red;font-weight:bold;">⚠️ Limited access: Only serious people are using these to change their income.</p>
 <div class="task" style="background:#e6f7ff;"><h3>💔 A Message From the Dead</h3><p>He ignored her call… she died… now she is texting him again. Would you open it?</p><a href="https://paystack.com/buy/she-texted-me-after-she-died-part-1-kopzku" target="_blank">🔥 Start Now</a><span>+100 pts</span></div>
 <small style="color:green;">✔ People are already making money from this</small>
@@ -1165,6 +1163,7 @@ const GUARANTEED_PRIZES = [
   { id:'p2', name:'₦500 Airtime', desc:'Top-up delivered within 10 minutes', icon:'📲', pts:220, color:'pi-green' },
   { id:'p3', name:'1GB Data Bundle', desc:'Valid on MTN, Airtel, Glo or 9mobile', icon:'🌐', pts:350, color:'pi-blue' },
   { id:'p4', name:'$1 Cash Voucher', desc:'Redeemable via bank transfer or PayPal', icon:'💵', pts:400, color:'pi-gold' },
+  { id:'p5', name:'₦2,000 Gift Card', desc:'Jumia or Konga shopping voucher', icon:'🛍️', pts:800, color:'pi-gold' },
   { id:'p6', name:'$5 Cash Payout', desc:'Bank transfer within 24 hours', icon:'💰', pts:1800, color:'pi-gold' },
 ];
 
@@ -1628,192 +1627,3 @@ window.addEventListener('DOMContentLoaded', () => {
 <small style="color:green;">✔ People are already making money from this</small>
 </body>
 </html>
-    <h1>Prizes & Rewards</h1>
-    <p>Redeem points or enter prize draws</p>
-    <div class="pts-quick">🪙 <span id="prize-pts">0</span> pts available</div>
-  </div>
-  <div class="prizes-body scroll-body">
-    <div class="prizes-tabs">
-      <div class="ptab on" onclick="switchPrizeTab(this,'guaranteed')">✅ Guaranteed</div>
-      <div class="ptab" onclick="switchPrizeTab(this,'draws')">🏆 Prize Draws</div>
-    </div>
-    <div id="prizes-guaranteed" class="prize-list"></div>
-    <div id="prizes-draws" style="display:none"></div>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════
-  SCREEN: REFER
-══════════════════════════════════ -->
-<div class="screen" id="s-refer">
-  <div class="refer-top">
-    <span class="refer-icon">🤝</span>
-    <h1>Refer & Earn</h1>
-    <p>Invite friends and earn <b>100 pts per referral</b>. No limit!</p>
-  </div>
-  <div class="refer-body scroll-body">
-    <div class="ref-code-box">
-      <div class="rcb-lbl">Your Referral Code</div>
-      <div class="rcb-code" id="ref-code">---</div>
-      <div class="ref-link-box" id="ref-link">earndrop.co/join?ref=---</div>
-      <div class="ref-share-btns">
-        <button class="share-btn sb-wa" onclick="shareWA()">📲 WhatsApp</button>
-        <button class="share-btn sb-copy" onclick="copyLink()">📋 Copy Link</button>
-      </div>
-    </div>
-
-    <div class="stats-row">
-      <div class="stat-box">
-        <div class="stat-val" id="ref-total">0</div>
-        <div class="stat-lbl">Referred</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-val" id="ref-pts">0</div>
-        <div class="stat-lbl">Pts Earned</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-val">100</div>
-        <div class="stat-lbl">Pts / Friend</div>
-      </div>
-    </div>
-
-    <div class="ref-how">
-      <div class="rh-title">How Referrals Work</div>
-      <div class="rh-steps">
-        <div class="rh-step">
-          <div class="rh-num">1</div>
-          <div class="rh-text">
-            <h4>Share your link</h4>
-            <p>Send your unique referral link to friends via WhatsApp, Instagram, or anywhere</p>
-          </div>
-        </div>
-        <div class="rh-step">
-          <div class="rh-num">2</div>
-          <div class="rh-text">
-            <h4>Friend registers</h4>
-            <p>When they sign up using your code, they get 50 bonus points too</p>
-          </div>
-        </div>
-        <div class="rh-step">
-          <div class="rh-num">3</div>
-          <div class="rh-text">
-            <h4>You both earn</h4>
-            <p>You instantly receive 100 points credited to your account</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════
-  WIN MODAL
-══════════════════════════════════ -->
-<div class="modal-overlay" id="win-modal">
-  <div class="modal-box" style="text-align:center;padding-top:36px;">
-    <div class="modal-handle"></div>
-    <span class="win-trophy" id="wm-icon">🎉</span>
-    <h2 class="win-title">Task <span>Complete!</span></h2>
-    <div class="confetti-row">🎊 🌟 🎉 🌟 🎊</div>
-    <div class="win-pts" id="wm-pts">+50<sup> pts</sup></div>
-    <p class="win-msg" id="wm-msg">Keep going! Complete more tasks to earn bigger rewards.</p>
-    <button class="btn btn-gold" onclick="closeWinModal()">🔥 Keep Earning</button>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════
-  REDEEM MODAL
-══════════════════════════════════ -->
-<div class="modal-overlay" id="redeem-modal">
-  <div class="modal-box">
-    <div class="modal-handle"></div>
-    <h2 class="modal-title" id="rm-title">Redeem Airtime</h2>
-    <p class="modal-sub" id="rm-sub">Enter your details to redeem your reward</p>
-    <div class="input-g">
-      <label>Phone Number</label>
-      <input type="tel" id="rm-phone" placeholder="+234 800 000 0000">
-    </div>
-    <div class="input-g">
-      <label>Network</label>
-      <select id="rm-network">
-        <option>MTN</option>
-        <option>Airtel</option>
-        <option>Glo</option>
-        <option>9mobile</option>
-        <option>Vodafone</option>
-        <option>Other</option>
-      </select>
-    </div>
-    <button class="btn btn-gold" onclick="submitRedeem()">✅ Submit Redemption</button>
-    <button class="btn btn-outline" style="margin-top:10px;" onclick="closeModal('redeem-modal')">Cancel</button>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════
-  DRAW ENTRY MODAL
-══════════════════════════════════ -->
-<div class="modal-overlay" id="draw-modal">
-  <div class="modal-box">
-    <div class="modal-handle"></div>
-    <h2 class="modal-title" id="dm-title">Enter Draw</h2>
-    <h1>Refer & Earn</h1>
-    <p>Invite friends and earn <b>100 pts per referral</b>. No limit!</p>
-  </div>
-  <div class="refer-body scroll-body">
-    <div class="ref-code-box">
-      <div class="rcb-lbl">Your Referral Code</div>
-      <div class="rcb-code" id="ref-code">---</div>
-      <div class="ref-link-box" id="ref-link">earndrop.co/join?ref=---</div>
-      <div class="ref-share-btns">
-        <button class="share-btn sb-wa" onclick="shareWA()">📲 WhatsApp</button>
-        <button class="share-btn sb-copy" onclick="copyLink()">📋 Copy Link</button>
-      </div>
-    </div>
-
-    <div class="stats-row">
-      <div class="stat-box">
-        <div class="stat-val" id="ref-total">0</div>
-        <div class="stat-lbl">Referred</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-val" id="ref-pts">0</div>
-        <div class="stat-lbl">Pts Earned</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-val">100</div>
-        <div class="stat-lbl">Pts / Friend</div>
-      </div>
-    </div>
-
-    <div class="ref-how">
-      <div class="rh-title">How Referrals Work</div>
-      <div class="how-title">⚡ How EarnDrop Works</div>
-      <div class="how-steps">
-        <div class="how-step">
-          <div class="hs-num">1</div>
-          <div class="hs-text">
-            <h4>Complete Tasks</h4>
-            <p>Click affiliate links, sign up for apps, watch partner content</p>
-          </div>
-        </div>
-        <div class="how-step">
-          <div class="hs-num">2</div>
-          <div class="hs-text">
-            <h4>Earn Points</h4>
-            <p>Every task gives you points. Refer friends for bonus points</p>
-          </div>
-        </div>
-        <div class="how-step">
-          <div class="hs-num">3</div>
-          <div class="hs-text">
-            <h4>Redeem or Enter Draws</h4>
-            <p>Swap points for airtime instantly, or buy tickets for big prize draws</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Leaderboard -->
-    <div class="leaders-section">
-      <div class="sec-head">
-        <div class="sec-title">🏅 Top Earners</div>
